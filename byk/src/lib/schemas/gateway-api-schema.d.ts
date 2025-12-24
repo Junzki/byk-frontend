@@ -66,12 +66,12 @@ export interface components {
             categories?: components["schemas"]["TagSchema"][];
             /** Location */
             location?: number | null;
-            /** ID */
-            id?: number | null;
+            /** Id */
+            id?: string | null;
             /** Title */
             title?: string | null;
-            /** Author */
-            author?: string | null;
+            /** Authors */
+            authors?: Record<string, never> | null;
             /** Published Date */
             published_date?: string | null;
             /** Isbn Number */
@@ -82,8 +82,20 @@ export interface components {
             cover_image?: string | null;
             /** Language */
             language?: string | null;
+            /** Tags */
+            tags?: Record<string, never> | null;
             /** Comments */
             comments?: string | null;
+            /**
+             * Created At
+             * Format: date
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date
+             */
+            updated_at: string;
         };
         /** TagSchema */
         TagSchema: {
@@ -103,8 +115,8 @@ export interface components {
         BookCreateSchema: {
             /** Title */
             title?: string | null;
-            /** Author */
-            author?: string | null;
+            /** Authors */
+            authors?: Record<string, never> | null;
             /** Published Date */
             published_date?: string | null;
             /** Isbn Number */
@@ -115,8 +127,20 @@ export interface components {
             cover_image?: string | null;
             /** Language */
             language?: string | null;
+            /** Tags */
+            tags?: Record<string, never> | null;
             /** Comments */
             comments?: string | null;
+            /**
+             * Created At
+             * Format: date
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date
+             */
+            updated_at: string;
         };
     };
     responses: never;

@@ -1,33 +1,71 @@
-import { Edit, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
+'use client';
 
-export interface BookData {
-  id: string;
-  name: string;
-  authors: string[];
-  tags?: string[];
-  isbn?: string;
-}
+import {useState} from 'react';
+import {Edit} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {Badge} from '@/components/ui/badge';
+import {Checkbox} from '@/components/ui/checkbox';
+import {Book} from "@/lib/models/books";
+import {DeleteOneBookButton} from "@/components/books/DeleteOneBookButton";
 
 interface BookListProps {
-  books: BookData[];
-  selectedIds: string[];
-  onToggleSelect: (id: string) => void;
-  onToggleSelectAll: () => void;
-  onEditBook: (book: BookData) => void;
-  onDeleteBook: (id: string) => void;
+  books: Book[];
 }
+
+
+function formatISBN(isbn: string): string {
+  // Simple formatting: add hyphens at standard positions for ISBN-13
+  if (isbn.length === 13) {
+    return `${isbn.slice(0, 3)}-${isbn.slice(3, 4)}-${isbn.slice(4, 7)}-${isbn.slice(7, 12)}-${isbn.slice(12)}`;
+  }
+  // For ISBN-10 or other lengths, return as is
+  return isbn;
+}
+
+// interface BookListProps {
+//   // selectedIds: string[];
+//   // onToggleSelect: (id: string) => void;
+//   // onToggleSelectAll: () => void;
+//   // onEditBook: (book: Book) => void;
+//   // onDeleteBook: (id: string) => void;
+// }
 
 export function BookList({
                            books,
-                           selectedIds,
-                           onToggleSelect,
-                           onToggleSelectAll,
-                           onEditBook,
-                           onDeleteBook
                          }: BookListProps) {
+
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  const onToggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      if (prev.includes(id)) {
+        // Deselect
+        return prev.filter((selectedId) => selectedId !== id);
+      } else {
+        // Select
+        return [...prev, id];
+      }
+    })
+  }
+
+  const onToggleSelectAll = () => {
+    if (selectedIds.length === books.length) {
+      // Deselect all
+      setSelectedIds([]);
+    } else {
+      // Select all
+      setSelectedIds(books.map((book) => book.id));
+    }
+  }
+
+  const onEditBook = (book: Book) => {
+    console.log("Edit book:", book);
+  }
+
+  const onDeleteBook = (id: string) => {
+    console.log("Delete book with id:", id);
+  }
+
   if (books.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center border rounded-lg">
@@ -79,26 +117,26 @@ export function BookList({
             <Checkbox
               checked={selectedIds.includes(book.id)}
               onCheckedChange={() => onToggleSelect(book.id)}
-              aria-label={`Select ${book.name}`}
+              aria-label={`Select ${book.title}`}
             />
 
             <div className="flex-1 grid grid-cols-12 gap-4 items-center min-w-0">
               {/* Title */}
               <div className="col-span-4 min-w-0">
-                <p className="truncate" title={book.name}>
-                  {book.name}
+                <p className="truncate" title={book.title}>
+                  {book.title}
                 </p>
                 {book.isbn && (
                   <p className="text-xs text-muted-foreground font-mono truncate">
-                    {book.isbn}
+                    ISBN: {formatISBN(book.isbn)}
                   </p>
                 )}
               </div>
 
               {/* Authors */}
               <div className="col-span-3 min-w-0">
-                <p className="text-sm truncate" title={book.authors.join(', ')}>
-                  {book.authors.join(', ')}
+                <p className="text-sm truncate" title={book.authors?.join(', ') || 'Unknown Author'}>
+                  {book.authors?.join(', ') || 'Unknown Author'}
                 </p>
               </div>
 
@@ -130,18 +168,10 @@ export function BookList({
                   onClick={() => onEditBook(book)}
                   className="h-8"
                 >
-                  <Edit className="w-4 h-4 mr-1" />
+                  <Edit className="w-4 h-4 mr-1"/>
                   Edit
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onDeleteBook(book.id)}
-                  className="h-8 text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="w-4 h-4 mr-1" />
-                  Delete
-                </Button>
+                <DeleteOneBookButton bookId={book.id}/>
               </div>
             </div>
           </div>
