@@ -1,12 +1,10 @@
-import { api } from "@/lib/api/client";
+import { getClient } from "@/lib/api/client";
 import type { components } from "@/lib/schemas/gateway-api-schema";
 import { Book } from "@/lib/models/books";
 
 
-
-
 export async function listBooks(): Promise<Book[]> {
-  const { data, error } = await api.GET("/book-manager/api/books/", {});
+  const { data, error } = await getClient().GET("/api/v1/books/", {});
   if (error) {
     // rethrow so callers can handle it (could be a network or API error from openapi-fetch)
     throw error;
@@ -28,7 +26,7 @@ export async function listBooks(): Promise<Book[]> {
 
 
 export async function deleteOneBook(id: string): Promise<void> {
-  const { error } = await api.DELETE("/book-manager/api/books/{book_id}/", {
+  const { error } = await getClient().DELETE("/api/v1/books/{book_id}/", {
     params: {
       path: {
         book_id: id
