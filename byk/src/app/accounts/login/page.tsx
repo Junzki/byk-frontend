@@ -24,7 +24,6 @@ export default function LoginPage() {
   const [ state, formAction, isPending ] = useActionState(doLogin, {
     success: null,
   } as LoginState);
-  const [ now, setNow ] = useState(() => Date.now());
   const [ cooldown, setCooldown ] = useState(0);
   console.log(cooldown);
   console.log(state);

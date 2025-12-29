@@ -15,17 +15,25 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Book } from "@/lib/models/books";
 
 
-const formSchema = z.object({
+export const formSchema = z.object({
   isbn: z.string().length(13, {
     message: "Username must be at least 13 characters.",
   }),
   title: z.string().optional()
 });
 
+export interface AddBookFormProps {
+  externalOnSubmit?: (data: Book) => void;
+  // You can extend with additional props if needed
+}
 
-export function AddBookForm() {
+
+export function AddBookForm({
+  externalOnSubmit,
+                            } : AddBookFormProps) {
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,10 +44,16 @@ export function AddBookForm() {
   })
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values)
+    console.debug(values);
+    if (externalOnSubmit) {
+      externalOnSubmit({
+        isbn: values.isbn,
+        title: values.title || '',
+      } as Book);
+    }
   }
 
   return (

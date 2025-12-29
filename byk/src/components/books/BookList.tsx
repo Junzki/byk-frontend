@@ -10,6 +10,7 @@ import {DeleteOneBookButton} from "@/components/books/DeleteOneBookButton";
 
 interface BookListProps {
   books: Book[];
+  emptyPlaceholder?: string;
 }
 
 
@@ -32,9 +33,11 @@ function formatISBN(isbn: string): string {
 
 export function BookList({
                            books,
+                           emptyPlaceholder,
                          }: BookListProps) {
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const emptyText = emptyPlaceholder || "No books found. Add your first book to get started!";
 
   const onToggleSelect = (id: string) => {
     setSelectedIds((prev) => {
@@ -69,7 +72,7 @@ export function BookList({
   if (books.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center border rounded-lg">
-        <p className="text-muted-foreground">No books found. Add your first book to get started!</p>
+        <p className="text-muted-foreground">{emptyText}</p>
       </div>
     );
   }

@@ -1,19 +1,17 @@
-
-import {
-  BookOpen,
-  Plus,
-  Search,
-  Trash2,
-} from 'lucide-react';
-import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { BookList } from '@/components/books/BookList';
+import { BookOpen, Plus, Search, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { BookList } from "@/components/books/BookList";
 import { Book } from "@/lib/models/books";
 import { uuidv7 } from "uuidv7";
-import { BookListContainer } from "@/components/books/BookListContainer";
+import { SearchAndCreateBooks } from "@/components/books/SearchAndCreateBook";
+import { listBooks } from "@/lib/api/books";
+import Navbar from "@/components/nav/navbar";
 
-export default function BooksPage() {
+export default async function BooksPage() {
+  const books = await listBooks();
   // const [books, setBooks] = useState<Book[]>([]);
   // const [searchQuery, setSearchQuery] = useState('');
   // const [editingBook, setEditingBook] = useState<Book | undefined>(undefined);
@@ -79,15 +77,15 @@ export default function BooksPage() {
   //   // }
   // };
   //
-  // const handleAddNewBookClick = () => {
-  //   // setEditingBook(undefined);
-  //   // if (searchQuery.trim()) {
-  //   //   setModalInitialValue(searchQuery.trim());
-  //   // } else {
-  //   //   setModalInitialValue(undefined);
-  //   // }
-  //   // setIsModalOpen(true);
-  // };
+  const handleAddNewBookClick = () => {
+    // setEditingBook(undefined);
+    // if (searchQuery.trim()) {
+    //   setModalInitialValue(searchQuery.trim());
+    // } else {
+    //   setModalInitialValue(undefined);
+    // }
+    // setIsModalOpen(true);
+  };
   //
   // const handleEditBook = (book: Book) => {
   //   // setEditingBook(book);
@@ -115,60 +113,50 @@ export default function BooksPage() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-6">
-            <BookOpen className="w-8 h-8" />
-            <h1>System &#34;ByK&#34;</h1>
-          </div>
+        <Navbar />
 
-          {/*/!* Search Bar and Add Button *!/*/}
-          {/*<div className="flex gap-3">*/}
-          {/*  <div className="relative flex-1">*/}
-          {/*    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />*/}
-          {/*    <Input*/}
-          {/*      placeholder="Search books by name, author, ISBN, or tags..."*/}
-          {/*      value={searchQuery}*/}
-          {/*      onChange={(e) => setSearchQuery(e.target.value)}*/}
-          {/*      className="pl-9"*/}
-          {/*    />*/}
-          {/*  </div>*/}
-          {/*  <Button onClick={handleAddNewBookClick}>*/}
-          {/*    <Plus className="w-4 h-4 mr-2" />*/}
-          {/*    Add New Book*/}
-          {/*  </Button>*/}
-          {/*</div>*/}
 
-          {/* Batch Operations Bar */}
-          {/*{selectedIds.length > 0 && (*/}
-          {/*  <div className="mb-4 p-3 bg-muted/50 rounded-lg flex items-center justify-between">*/}
-          {/*  <span className="text-sm">*/}
-          {/*    {selectedIds.length} book(s) selected*/}
-          {/*  </span>*/}
-          {/*    <Button*/}
-          {/*      variant="destructive"*/}
-          {/*      size="sm"*/}
-          {/*      onClick={() => setShowBatchDeleteDialog(true)}*/}
-          {/*    >*/}
-          {/*      <Trash2 className="w-4 h-4 mr-2" />*/}
-          {/*      Delete Selected*/}
-          {/*    </Button>*/}
-          {/*  </div>*/}
-          {/*)}*/}
+        {/* Search Bar and Add Button */}
+        <div className="mb-4">
+          <div className="flex gap-3">
+            <Button asChild>
+              <Link href="/books/create">
+                <Plus className="w-4 h-4 mr-2" />
+                Add New Book
+              </Link>
+            </Button>
 
-          {/* Books List */}
-          <div>
-            <div className="mb-4">
-              <h2>
-                {/*{searchQuery ? `Search Results (${filteredBooks.length})` : `Your Books (${books.length})`}*/}
-              </h2>
-            </div>
-            <BookListContainer />
+            <SearchAndCreateBooks />
           </div>
         </div>
 
+        {/* Batch Operations Bar */}
+        {/*{selectedIds.length > 0 && (*/}
+        {/*  <div className="mb-4 p-3 bg-muted/50 rounded-lg flex items-center justify-between">*/}
+        {/*  <span className="text-sm">*/}
+        {/*    {selectedIds.length} book(s) selected*/}
+        {/*  </span>*/}
+        {/*    <Button*/}
+        {/*      variant="destructive"*/}
+        {/*      size="sm"*/}
+        {/*      onClick={() => setShowBatchDeleteDialog(true)}*/}
+        {/*    >*/}
+        {/*      <Trash2 className="w-4 h-4 mr-2" />*/}
+        {/*      Delete Selected*/}
+        {/*    </Button>*/}
+        {/*  </div>*/}
+        {/*)}*/}
 
+        {/* Books List */}
+        <div className="mb-8">
+          <div className="mb-4">
+            <h2>
+              {/*{searchQuery ? `Search Results (${filteredBooks.length})` : `Your Books (${books.length})`}*/}
+            </h2>
+          </div>
+          <BookList books={books} />
+        </div>
       </div>
     </div>
   );
 }
-
